@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:messenger_clone/helperfunctions/sharedpref_helper.dart';
 import 'package:messenger_clone/services/database.dart';
 import 'package:messenger_clone/views/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthMethods {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -57,5 +58,11 @@ class AuthMethods {
       print("This is the catch error message: $e");
     }
 
+  }
+
+  Future signOut() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    await auth.signOut();
   }
 }
