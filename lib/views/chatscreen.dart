@@ -55,7 +55,19 @@ class _ChatScreenState extends State<ChatScreen> {
       }
 
       DatabaseMethods().addMessage(chatRoomId, messageId, messageInfoMap).then((value) {
+        Map<String, dynamic> lastMessageInfoMap = {
+          "lastMessage" : message,
+          "lastMessageSentTS" : lastMessageTimestamp,
+          "lastMessageSendBy" : myUserName,
+        };
 
+        DatabaseMethods().updateLastMessageSent(chatRoomId, lastMessageInfoMap);
+
+        if(sendClicked){
+          messageTextEditingController.text = "";
+          messageId = "";
+
+        }
       });
     }
   }

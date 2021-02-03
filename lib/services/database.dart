@@ -13,4 +13,8 @@ class DatabaseMethods{
   Future addMessage(String chatRoomId, String messageId, Map messageInfoMap) async{
     return FirebaseFirestore.instance.collection("chatrooms").doc(chatRoomId).collection("chats").doc(messageId).set(messageInfoMap);
   }
+
+  updateLastMessageSent(String chatRoomId, Map lastMessageInfoMap){
+    return FirebaseFirestore.instance.collection("chatrooms").doc(chatRoomId).update(lastMessageInfoMap);
+  }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:messenger_clone/helperfunctions/sharedpref_helper.dart';
 import 'package:messenger_clone/services/auth.dart';
 import 'package:messenger_clone/services/database.dart';
 import 'package:messenger_clone/views/chatscreen.dart';
@@ -14,6 +15,23 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool isSearching = false;
   TextEditingController _searchUsernameController = TextEditingController();
+  String myName, myProfilePic, myUserName, myEmail;
+
+  getMyInfoFromSharedPrefs() async {
+    myName = await SharedPreferenceHelper().getDisplayName();
+    myProfilePic = await SharedPreferenceHelper().getUserProfilePic();
+    myUserName = await SharedPreferenceHelper().getUserName();
+    myEmail = await SharedPreferenceHelper().getUserEmail();
+
+  }
+
+  getChatRoomIdByUsernames(String a, String b) {
+    if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
+      return "$a\_$b";
+    } else {
+      return "$b\_$a";
+    }
+  }
 
   Stream usersStream;
 
@@ -50,11 +68,23 @@ class _HomeState extends State<Home> {
         ],
       ),
       onTap: (){
+        var chatRoomId = getChatRoomIdByUsernames(myUserName, username);
+        Map<String, dynamic> chatRoomInfoMap = {
+          "users" : [myUserName, username],
+
+        };
         Navigator.of(context).push(MaterialPageRoute(builder: (context){
           return ChatScreen(chatWithUsername: username, name: name,);
         }));
       },
     );
+  }
+
+
+  @override
+  void initState() {
+    getMyInfoFromSharedPrefs();
+    super.initState();
   }
 
   Widget searchUsersList() {
